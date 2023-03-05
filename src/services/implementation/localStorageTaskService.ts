@@ -14,6 +14,7 @@ export class LocalStorageTaskService implements TaskService {
       duration: req.duration,
       position: 0,
       isActive: true,
+      createdAt: new Date(),
     }
 
     const state: TaskerState = getState()
@@ -25,26 +26,46 @@ export class LocalStorageTaskService implements TaskService {
     return await Promise.resolve(newTask)
   }
 
-  async getTasks(): Promise<Task[]> {
-    const state: TaskerState = getState()
-
-    return await Promise.resolve(state.tasks)
-  }
-
-  async updateTask(task: UpdateTaskRequest): Promise<Task> {
+  async updateTask(req: UpdateTaskRequest): Promise<Task> {
     const state: TaskerState = getState()
     const tasks: Task[] = state.tasks
 
-    const index = tasks.findIndex((t) => t.id === task.id)
+    const taskIndex = tasks.findIndex((task) => task.id === req.id)
 
-    if (index === -1) {
+    if (taskIndex === -1) {
       throw new Error('Task not found')
     }
 
-    tasks[index] = task
+    const task: Task = tasks[taskIndex]
+
+    task.name = req.name
+    task.duration = req.duration
+    task.position = req.position
+    task.isActive = req.isActive
 
     saveState(state)
 
     return await Promise.resolve(task)
+  }
+
+  async deleteTask(id: string): Promise<void> {
+    const state: TaskerState = getState()
+    const tasks: Task[] = state.tasks
+
+    const taskIndex = tasks.findIndex((task) => task.id === id)
+
+    if (taskIndex === -1) {
+      return
+    }
+
+    tasks.splice(taskIndex, 1)
+
+    saveState(state)
+  }
+
+  async getTasks(): Promise<Task[]> {
+    const state: TaskerState = getState()
+
+    return await Promise.resolve(state.tasks)
   }
 }

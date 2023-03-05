@@ -3,5 +3,6 @@ export interface Task {
   name: string
   duration: number
   position: number,
-  isActive: boolean
+  isActive: boolean,
+  createdAt: Date
 }

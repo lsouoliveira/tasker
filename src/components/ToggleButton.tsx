@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 interface ToggleButtonProps {
   activeText?: string
@@ -6,6 +6,7 @@ interface ToggleButtonProps {
   onClick?: () => void
   onActive?: () => void
   onInactive?: () => void
+  isActive?: boolean
 }
 
 const BASE_CLASS_NAME = `rounded-md 
@@ -28,11 +29,14 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   onClick,
   onActive,
   onInactive,
+  isActive
 }) => {
-  const [isActive, setIsActive] = useState(false)
+  const isEnabled = (): boolean => {
+    return isActive ?? false
+  }
 
   const activeClassName = (): string => {
-    if (!isActive) {
+    if (!isEnabled()) {
       return ''
     }
 
@@ -44,14 +48,13 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   }
 
   const handleClick = (): void => {
-    setIsActive(!isActive)
     onClick?.()
-    isActive ? onInactive?.() : onActive?.()
+    isEnabled() ? onInactive?.() : onActive?.()
   }
 
   return (
     <button type="button" className={className()} onClick={handleClick}>
-      {isActive ? activeText : inactiveText}
+      {isEnabled() ? activeText : inactiveText}
     </button>
   )
 }

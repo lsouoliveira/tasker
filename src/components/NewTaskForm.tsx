@@ -31,13 +31,15 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({
   const handleNameChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>): void => {
-    setName(value)
+    setName(value ?? '')
   }
 
   const handleDurationChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>): void => {
-    setDuration(parseInt(value))
+    const newDuration = value === '' ? 0 : parseInt(value)
+
+    setDuration(newDuration)
   }
 
   const handleSubmit = (): void => {
