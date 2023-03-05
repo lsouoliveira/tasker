@@ -1,21 +1,26 @@
-import React, { useState } from 'react'
-import AddTaskButton from './components/AddTaskButton'
+import React, { useState, useEffect } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
+import AddTaskButton from './components/AddTaskButton'
 import Header from './components/Header'
 import NewTaskForm, { type NewTaskFormData } from './components/NewTaskForm'
 import TaskList from './components/TaskList'
 import TaskPlayer from './components/TaskPlayer'
 import { type Task } from './types'
+import { taskService } from './services'
 
 const App: React.FC<any> = () => {
   const [showForm, setShowForm] = useState<boolean>(false)
+  const [tasks, setTasks] = useState<Task[]>([])
 
-  const tasks = (): Task[] => {
-    return [
-      { id: '1', name: 'Task 1', duration: 120, position: 50, isActive: true },
-      { id: '2', name: 'Task 2', duration: 120, position: 50, isActive: false },
-      { id: '3', name: 'Task 3', duration: 120, position: 50, isActive: false },
-    ]
+  useEffect(() => {
+    getTasks().catch(console.error)
+  }, [])
+
+  const getTasks = async (): Promise<void> => {
+    const tasks = await taskService.getTasks()
+
+    setTasks(tasks)
   }
 
   const handleAddTask = (): void => {
@@ -27,6 +32,23 @@ const App: React.FC<any> = () => {
   }
 
   const handleFormSubmit = ({ name, duration }: NewTaskFormData): void => {
+    const payload = {
+      id: uuidv4(),
+      name,
+      duration,
+    }
+
+    taskService.createTask(payload).then(getTasks).catch(console.error)
+  }
+
+  const getRemainingTime = (): number => {
+    return tasks.reduce((acc, task) => {
+      if (!task.isActive) {
+        return 0
+      }
+
+      return acc + task.duration
+    }, 0)
   }
 
   return (
@@ -35,7 +57,7 @@ const App: React.FC<any> = () => {
         <Header />
 
         <div className="mt-3">
-          <TaskPlayer />
+          <TaskPlayer time={getRemainingTime()} />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -43,7 +65,7 @@ const App: React.FC<any> = () => {
             Tasks
           </div>
 
-          <TaskList tasks={tasks()} />
+          <TaskList tasks={tasks} />
         </div>
 
         <div className="mt-3">
