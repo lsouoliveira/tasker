@@ -7,7 +7,7 @@ import { getState, saveState, type TaskerState } from './../localStorageService'
 import { type Task } from './../../types'
 
 export class LocalStorageTaskService implements TaskService {
-  async createTask(req: CreateTaskRequest): Promise<Task[]> {
+  async createTask(req: CreateTaskRequest): Promise<Task> {
     const newTask: Task = {
       id: req.id,
       name: req.name,
@@ -22,7 +22,7 @@ export class LocalStorageTaskService implements TaskService {
     tasks.push(newTask)
     saveState(state)
 
-    return await Promise.resolve(state.tasks)
+    return await Promise.resolve(newTask)
   }
 
   async getTasks(): Promise<Task[]> {
@@ -31,7 +31,7 @@ export class LocalStorageTaskService implements TaskService {
     return await Promise.resolve(state.tasks)
   }
 
-  async updateTask(task: UpdateTaskRequest): Promise<Task[]> {
+  async updateTask(task: UpdateTaskRequest): Promise<Task> {
     const state: TaskerState = getState()
     const tasks: Task[] = state.tasks
 
@@ -45,6 +45,6 @@ export class LocalStorageTaskService implements TaskService {
 
     saveState(state)
 
-    return await Promise.resolve(state.tasks)
+    return await Promise.resolve(task)
   }
 }

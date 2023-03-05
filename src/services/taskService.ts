@@ -15,7 +15,7 @@ export interface UpdateTaskRequest {
 }
 
 export interface TaskService {
-  createTask: (req: CreateTaskRequest) => Promise<Task[]>
+  createTask: (req: CreateTaskRequest) => Promise<Task>
   getTasks: () => Promise<Task[]>
-  updateTask: (task: UpdateTaskRequest) => Promise<Task[]>
+  updateTask: (task: UpdateTaskRequest) => Promise<Task>
 }

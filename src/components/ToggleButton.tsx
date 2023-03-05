@@ -40,8 +40,6 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   }
 
   const className = (): string => {
-    console.log(`${BASE_CLASS_NAME} ${activeClassName()}`)
-
     return `${BASE_CLASS_NAME} ${activeClassName()}`
   }
 

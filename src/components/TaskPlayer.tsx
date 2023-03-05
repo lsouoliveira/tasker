@@ -5,9 +5,15 @@ import { formatTime } from '../utils'
 
 interface TaskPlayerProps {
   time?: number
+  onActive?: () => void
+  onInactive?: () => void
 }
 
-const TaskPlayer: React.FC<TaskPlayerProps> = ({ time }) => {
+const TaskPlayer: React.FC<TaskPlayerProps> = ({
+  time,
+  onActive,
+  onInactive,
+}) => {
   const formattedTime = formatTime(time ?? 0)
 
   return (
@@ -17,7 +23,12 @@ const TaskPlayer: React.FC<TaskPlayerProps> = ({ time }) => {
       </div>
 
       <div className="justify-center flex">
-        <ToggleButton activeText="pause" inactiveText="start" />
+        <ToggleButton
+          activeText="pause"
+          inactiveText="start"
+          onActive={onActive}
+          onInactive={onInactive}
+        />
       </div>
     </div>
   )

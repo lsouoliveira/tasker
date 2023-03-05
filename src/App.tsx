@@ -23,6 +23,18 @@ const App: React.FC<any> = () => {
     setTasks(tasks)
   }
 
+  const saveTask = async (name: string, duration: number): Promise<void> => {
+    const payload = {
+      id: uuidv4(),
+      name,
+      duration,
+    }
+
+    const createdTask = await taskService.createTask(payload)
+
+    setTasks([...tasks, createdTask])
+  }
+
   const handleAddTask = (): void => {
     setShowForm(true)
   }
@@ -32,13 +44,7 @@ const App: React.FC<any> = () => {
   }
 
   const handleFormSubmit = ({ name, duration }: NewTaskFormData): void => {
-    const payload = {
-      id: uuidv4(),
-      name,
-      duration,
-    }
-
-    taskService.createTask(payload).then(getTasks).catch(console.error)
+    saveTask(name, duration).catch(console.error)
   }
 
   const getRemainingTime = (): number => {
@@ -51,13 +57,21 @@ const App: React.FC<any> = () => {
     }, 0)
   }
 
+  const handlePlay = (): void => {}
+
+  const handlePause = (): void => {}
+
   return (
     <div className="App bg-sky-700 min-h-screen">
       <div className="max-w-xl mx-auto pb-3">
         <Header />
 
         <div className="mt-3">
-          <TaskPlayer time={getRemainingTime()} />
+          <TaskPlayer
+            time={getRemainingTime()}
+            onActive={handlePlay}
+            onInactive={handlePause}
+          />
         </div>
 
         <div className="flex flex-col gap-3">
