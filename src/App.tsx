@@ -8,12 +8,15 @@ import TaskList from './components/TaskList'
 import TaskPlayer from './components/TaskPlayer'
 import { type Task } from './types'
 import { taskService } from './services'
+import ConfirmationModal from './components/ConfirmationModal'
 
 const App: React.FC<any> = () => {
   const [showForm, setShowForm] = useState<boolean>(false)
   const [tasks, setTasks] = useState<Task[]>([])
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null)
+  const [showSkipModal, setShowSkipModal] = useState<boolean>(false)
+  const [showResetModal, setShowResetModal] = useState<boolean>(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const tasksRef = useRef<Task[]>(tasks)
 
@@ -202,19 +205,14 @@ const App: React.FC<any> = () => {
   }
 
   const handleReset = (): void => {
-    const updatedTasks = tasks.map((task) => {
-      return {
-        ...task,
-        position: 0,
-        isActive: true,
-      }
-    })
-
-    updateTasks(updatedTasks).catch(console.error)
-    setIsPlaying(false)
+    setShowResetModal(true)
   }
 
   const handleSkip = (): void => {
+    setShowSkipModal(true)
+  }
+
+  const handleSkipModalConfirm = (): void => {
     let currentTask = tasks.find((task) => task.id === currentTaskId)
 
     if (currentTask == null) {
@@ -237,8 +235,29 @@ const App: React.FC<any> = () => {
     setCurrentTaskId(nextActiveTask?.id ?? null)
   }
 
+  const handleSkipModalClose = (): void => {
+    setShowSkipModal(false)
+  }
+
   const handleDelete = (id: string): void => {
     deleteTask(id).catch(console.error)
+  }
+
+  const handleResetModalConfirm = (): void => {
+    const updatedTasks = tasks.map((task) => {
+      return {
+        ...task,
+        position: 0,
+        isActive: true,
+      }
+    })
+
+    updateTasks(updatedTasks).catch(console.error)
+    setIsPlaying(false)
+  }
+
+  const handleResetModalClose = (): void => {
+      setShowResetModal(false)
   }
 
   return (
@@ -277,6 +296,22 @@ const App: React.FC<any> = () => {
           />
         </div>
       </div>
+
+      <ConfirmationModal
+        show={showSkipModal}
+        onClose={handleSkipModalClose}
+        onConfirm={handleSkipModalConfirm}
+      >
+        are you sure?
+      </ConfirmationModal>
+
+      <ConfirmationModal
+        show={showResetModal}
+        onClose={handleResetModalClose}
+        onConfirm={handleResetModalConfirm}
+      >
+        are you sure?
+      </ConfirmationModal>
     </div>
   )
 }
