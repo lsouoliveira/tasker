@@ -2,7 +2,7 @@
 
 A simple task app.
 
-![image](https://github.com/lsouoliveira/tasker/assets/30642647/22407acb-7940-4af4-8d89-c220cdcf328b)
+![image](https://github.com/lsouoliveira/tasker/assets/30642647/de26506e-d52d-4f5b-b933-80004b263b4f)
 
 ## Getting Started
 
